@@ -32,3 +32,8 @@ void UArmsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	// ...
 }
 
+void UArmsComponent::ChangeWeapon(UClass* WeaponClass) 
+{
+	return;
+}
+

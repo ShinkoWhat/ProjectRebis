@@ -1,4 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+// https://www.tomlooman.com/unreal-engine-cpp-guide/
 
 #pragma once
 
@@ -28,8 +29,13 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Components|Activation")
 	FOnWeaponChange WeaponChangeCallback;
 
-	UPROPERTY(EditAnywhere, Category="WeaponClass")
-	TSubclassOf<AActor> BaseWeaponClass;
+	UPROPERTY(EditDefaultsOnly, Category="WeaponClass")
+	TSubclassOf<class AActor> BaseWeaponClass;
+
+	TSoftObjectPtr<class BaseWeaponClass> WeaponInstance;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ChangeWeapon(class UClass* WeaponClass);
 
 	//UPROPERTY(BlueprintReadWrite)
 	//TArray<BaseWeaponClass> WeaponArray;
