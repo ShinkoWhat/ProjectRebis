@@ -7,9 +7,9 @@
 #include "Components/ActorComponent.h"
 #include "ArmsComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponChange);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponChangeSignature, double)
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
 class PROJECTREBIS_API UArmsComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -22,24 +22,38 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	virtual void InstantiatePlayer();
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(BlueprintAssignable, Category="Components|Activation")
-	FOnWeaponChange WeaponChangeCallback;
-
-	UPROPERTY(EditDefaultsOnly, Category="WeaponClass")
-	TSubclassOf<class AActor> BaseWeaponClass;
-
-	TSoftObjectPtr<class BaseWeaponClass> WeaponInstance;
+	virtual void PostLoad() override;
+	
+	void OnWeaponChange(double InputValue);
+	
+	FOnWeaponChangeSignature OnWeaponChangeDelegate;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void ChangeWeapon(class UClass* WeaponClass);
+	FString GetMapKeyByValue(TSoftObjectPtr<class ABaseWeapon> Value);
 
-	//UPROPERTY(BlueprintReadWrite)
-	//TArray<BaseWeaponClass> WeaponArray;
+	UFUNCTION(BlueprintCallable)
+	void AssignNewWeapon(int32 Id);
+	
+public:
 
-	//UPROPERTY(EditAnywhere, Category="WeaponClass")
-	//TSoftClassPtr<BaseWeaponClass> CurrentWeapon;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Default")
+	class ACharacterBase* PlayerCharacterReference;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	int32 WeaponID;
+	
+	UPROPERTY(BlueprintReadWrite, Category="Default")
+	TMap<FString, TSoftObjectPtr<ABaseWeapon>> WeaponArray;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
+	TArray<FString> WeaponArrayKeys;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentWeaponID;
 };
