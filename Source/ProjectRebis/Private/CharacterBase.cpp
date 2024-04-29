@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CharacterBase.h"
-
+#include "DamageData.h"
 #include "BaseWeapon.h"
 
 // Sets default values
@@ -12,10 +12,11 @@ ACharacterBase::ACharacterBase()
 
 	SetRootComponent(GetCapsuleComponent());
 	
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("DefaultCamera"));
+	Camera = CreateOptionalDefaultSubobject<UCameraComponent>(TEXT("DefaultCamera"));
 	Camera->SetupAttachment(RootComponent);
-	CameraComponent = CreateDefaultSubobject<UCameraControlComponent>(TEXT("DefaultCameraControl"));
+	CameraComponent = CreateOptionalDefaultSubobject<UCameraControlComponent>(TEXT("DefaultCameraControl"));
 	ArmsComponent = CreateDefaultSubobject<UArmsComponent>(TEXT("DefaultArmsComponent"));
+	DamageManagerComponent = CreateDefaultSubobject<UDamageManagerComponent>(TEXT("DefaultDamageManager"));
 }
 
 // Called when the game starts or when spawned
@@ -25,7 +26,6 @@ void ACharacterBase::BeginPlay()
 
 	SkeletalMesh = Super::GetMesh();
 	Camera->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	
 }
 
 // Called every frame
@@ -46,6 +46,7 @@ void ACharacterBase::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnWeaponPickup);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::TestOverlapHandler);
 }
 
 void ACharacterBase::OnWeaponPickup(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -61,7 +62,28 @@ void ACharacterBase::OnWeaponPickup(UPrimitiveComponent* OverlappedComp, AActor*
 	}
 }
 
-void ACharacterBase::AddPropulsion(double PropulsionValue)
+void ACharacterBase::AttachWeaponToCharacter(ABaseWeapon* WeaponToAttach, FName Socket)
 {
+	//auto msg1 = TEXT("AAAAAAAAAAAAAAAA");
+	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg1);
+	if (IsValid(WeaponToAttach))
+	{
+		//auto msg = TEXT("OOOOOOOOOOO");
+		//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg);
+		WeaponToAttach->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, Socket);
+		CurrentWeapon = WeaponToAttach;
+	}
+}
+
+void ACharacterBase::TestOverlapHandler(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto msg1 = TEXT("UUUUUUUUUUUu");
+	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg1);
+	FDamageData NewDamageData;
+	NewDamageData.OtherActor = OtherActor;
+	NewDamageData.DamageValue = DamageManagerComponent->BaseDamage;
+	NewDamageData.OtherComp = OtherComp;
+	DamageManagerComponent->OnSendDamageDelegate.Broadcast(NewDamageData);
 }
 

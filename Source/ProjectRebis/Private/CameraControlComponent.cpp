@@ -24,21 +24,22 @@ void UCameraControlComponent::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerCharacterReference = Cast<ACharacterBase>(GetOwner());
-	//if (GetOwner()->GetClass() == ACharacterBase::StaticClass())
-	//{
+
 	Camera = PlayerCharacterReference->GetCamera();
-	//}
+	CameraOrigin = Camera->GetRelativeLocation();
+
 	Tolerance = 0.5f;
+	FalloffRange = 500.0f;
 }
 
 // Called every frame
 void UCameraControlComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
 	//FString CameraName = Camera->GetName();
 	//UE_LOG(LogTemp, Warning, TEXT("Camera Object: %ls"), *PlayerCharacterReference->GetName());
-	CameraSpring(0.5);
+	CameraSpring(0.0f);
 	double Alpha = 1 - pow(Tolerance, DeltaTime);
 	FVector OffsetLerp = FMath::Lerp(CurrentLocation, TargetLocation, Alpha);
 	Camera->SetWorldLocation(OffsetLerp);
@@ -46,10 +47,21 @@ void UCameraControlComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UCameraControlComponent::CameraSpring(const double Alpha = 0.5f)
 {
+	FVector SkeletalMeshLoc = PlayerCharacterReference->SkeletalMesh->GetComponentLocation();
+	FVector DistanceFromCharacterToCursor = SkeletalMeshLoc - TargetLocation;
 	FVector CameraLocation = PlayerCharacterReference->GetCamera()->GetComponentLocation();
 	CurrentLocation.Set(CameraLocation.X, CameraLocation.Y, CameraLocation.Z);
-	FVector SkeletalMeshLoc = PlayerCharacterReference->SkeletalMesh->GetComponentLocation();
-	FVector BufferLerp = FMath::Lerp(FVector(SkeletalMeshLoc.X, SkeletalMeshLoc.Y, CameraLocation.Z), FVector(TargetLocation.X, TargetLocation.Y, CameraLocation.Z), Alpha);
-	TargetLocation = BufferLerp - FVector(600, 0, 0);
+
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Cyan, DistanceFromCharacterToCursor.ToString());
+
+	double dAlpha = FMath::Exp(-DistanceFromCharacterToCursor.Length() / FalloffRange);
+	
+	auto msg = FString::SanitizeFloat(dAlpha);
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, msg);
+	
+	FVector BufferLerp = FMath::Lerp(FVector(SkeletalMeshLoc.X, SkeletalMeshLoc.Y, CameraLocation.Z),
+		FVector(TargetLocation.X, TargetLocation.Y, CameraLocation.Z), dAlpha);
+	TargetLocation = FVector(BufferLerp.X + CameraOrigin.X, BufferLerp.Y + CameraOrigin.Y, CameraLocation.Z);
 }
+
 

@@ -3,7 +3,11 @@
 
 #include "ArmsComponent.h"
 
+#include <string>
+
+#include "BaseWeapon.h"
 #include "CharacterBase.h"
+#include "Engine/StreamableManager.h"
 
 // Sets default values for this component's properties
 UArmsComponent::UArmsComponent()
@@ -18,7 +22,10 @@ UArmsComponent::UArmsComponent()
 void UArmsComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InstantiatePlayer();
+
+	OnWeaponChangeDelegate.AddUObject(this, &UArmsComponent::OnWeaponChange);
 	//OnWeaponChangeDelegate.AddUObject(this, &UArmsComponent::OnWeaponChange);
 }
 
@@ -34,46 +41,42 @@ void UArmsComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 void UArmsComponent::PostLoad() 
 {
 	Super::PostLoad();
-
-	InstantiatePlayer();
-
-	OnWeaponChangeDelegate.AddUObject(this, &UArmsComponent::OnWeaponChange);
-
-	CurrentWeaponID = 0;
-	AssignNewWeapon(CurrentWeaponID);
+	
+	
+	
 }
 
 void UArmsComponent::OnWeaponChange(double InputValue)
 {
-	if (InputValue > 0)
+	if (InputValue == 1)
 	{
-		if (CurrentWeaponID < WeaponArrayKeys.Num())
-		{
-			CurrentWeaponID++;
-			AssignNewWeapon(CurrentWeaponID);
-		}
-		else if (CurrentWeaponID == WeaponArray.Num() - 1)
-		{
-			CurrentWeaponID = 0;
-			AssignNewWeapon(CurrentWeaponID);
-		}
+		NextWeapon();
 	}
-	else
+	else if (InputValue == -1)
 	{
-		if (CurrentWeaponID > 0)
-		{
-			CurrentWeaponID--;
-			AssignNewWeapon(CurrentWeaponID);
-		}
-		else if (CurrentWeaponID == 0)
-		{
-			CurrentWeaponID = WeaponArrayKeys.Num() - 1;
-			AssignNewWeapon(CurrentWeaponID);
-		}
+		PreviousWeapon();
 	}
 }
 
-FString UArmsComponent::GetMapKeyByValue(TSoftObjectPtr<ABaseWeapon> Value)
+void UArmsComponent::NextWeapon()
+{
+	if (CurrentWeaponID < WeaponArrayKeys.Num())
+	{
+		CurrentWeaponID = (CurrentWeaponID + 1) % 3;
+		AssignNewWeapon(CurrentWeaponID);
+	}
+}
+
+void UArmsComponent::PreviousWeapon()
+{
+	if (CurrentWeaponID >= 0)
+	{
+		CurrentWeaponID == 0 ? CurrentWeaponID = WeaponArrayKeys.Num() - 1 : CurrentWeaponID = CurrentWeaponID - 1;
+		AssignNewWeapon(CurrentWeaponID);
+	}
+}
+
+FString UArmsComponent::GetMapKeyByValue(ABaseWeapon* Value)
 {
 	for (auto& Pair : WeaponArray)
 	{
@@ -88,6 +91,7 @@ FString UArmsComponent::GetMapKeyByValue(TSoftObjectPtr<ABaseWeapon> Value)
 void UArmsComponent::AssignNewWeapon(int32 Id)
 {
 	PlayerCharacterReference->CurrentWeapon = WeaponArray.FindRef(WeaponArrayKeys[Id]);
+	PlayerCharacterReference->AttachWeaponToCharacter(PlayerCharacterReference->CurrentWeapon, "RightHandSocket");
 }
 
 void UArmsComponent::InstantiatePlayer()
@@ -100,6 +104,9 @@ void UArmsComponent::InstantiatePlayer()
 	WeaponArray.Add("Support", nullptr);
 	
 	WeaponArray.GenerateKeyArray(WeaponArrayKeys);
+
+	CurrentWeaponID = 0;
+	AssignNewWeapon(CurrentWeaponID);
 }
 
 

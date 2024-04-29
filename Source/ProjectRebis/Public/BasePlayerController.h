@@ -41,7 +41,7 @@ public:
 	void ActionSecondary(const FInputActionInstance& Instance);
 
 	UFUNCTION(BlueprintCallable)
-	void ActionTransition(const FInputActionValue& Value);
+	void ActionTransition(const FInputActionInstance& Instance);
 	
 public:
 

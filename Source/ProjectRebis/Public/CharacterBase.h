@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "CameraControlComponent.h"
+#include "DamageManagerComponent.h"
 #include "CharacterBase.generated.h"
 
 UCLASS()
@@ -46,10 +47,14 @@ public:
 	UCameraComponent* GetCamera() const { return Camera; }
 
 	UFUNCTION(BlueprintCallable)
+	void AttachWeaponToCharacter(ABaseWeapon* WeaponToAttach, FName Socket);
+
+	UFUNCTION(BlueprintCallable)
 	void SetCameraTransform(FVector Value) { Camera->SetWorldLocation(Value); }
-	
-	UFUNCTION(BlueprintCallable, Category = "Movement")
-	void AddPropulsion(double PropulsionValue);
+
+	UFUNCTION(BlueprintCallable)
+	void TestOverlapHandler(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 //Components
 public:
@@ -69,6 +74,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 	UArmsComponent* ArmsComponent;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
+	UDamageManagerComponent* DamageManagerComponent;
+
 //Properties
 public:
 	
@@ -81,8 +89,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 	TSubclassOf<ABaseWeapon> WeaponClass;
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
-	TSoftObjectPtr<ABaseWeapon> CurrentWeapon;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
+	ABaseWeapon* CurrentWeapon;
 };
 

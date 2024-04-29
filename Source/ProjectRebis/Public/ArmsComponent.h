@@ -5,8 +5,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/StreamableManager.h"
 #include "ArmsComponent.generated.h"
 
+struct FStreamableManager;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponChangeSignature, double)
 
 UCLASS(BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
@@ -29,31 +31,36 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void PostLoad() override;
-	
+
+	UFUNCTION(BlueprintCallable)
 	void OnWeaponChange(double InputValue);
+
+	UFUNCTION(BlueprintCallable)
+	void NextWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void PreviousWeapon();
 	
 	FOnWeaponChangeSignature OnWeaponChangeDelegate;
 
 	UFUNCTION(BlueprintCallable)
-	FString GetMapKeyByValue(TSoftObjectPtr<class ABaseWeapon> Value);
+	FString GetMapKeyByValue(class ABaseWeapon* Value);
 
 	UFUNCTION(BlueprintCallable)
 	void AssignNewWeapon(int32 Id);
+
 	
 public:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Default")
 	class ACharacterBase* PlayerCharacterReference;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	int32 WeaponID;
 	
-	UPROPERTY(BlueprintReadWrite, Category="Default")
-	TMap<FString, TSoftObjectPtr<ABaseWeapon>> WeaponArray;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
+	TMap<FString, ABaseWeapon*> WeaponArray;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
 	TArray<FString> WeaponArrayKeys;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
 	int32 CurrentWeaponID;
 };

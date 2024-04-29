@@ -52,4 +52,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 	double Tolerance;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
+	double FalloffRange;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
+	FVector CameraOrigin;
 };

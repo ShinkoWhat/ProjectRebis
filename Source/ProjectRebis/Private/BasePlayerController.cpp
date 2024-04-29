@@ -44,11 +44,11 @@ void ABasePlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 void ABasePlayerController::ActionPrimary(const FInputActionInstance& Instance)
 {
-	IBaseAbility* AbilityInterface = Cast<IBaseAbility>(PlayerCharacterReference->CurrentWeapon.Get());
+	IBaseAbility* AbilityInterface = Cast<IBaseAbility>(PlayerCharacterReference->CurrentWeapon);
 	if (AbilityInterface)
 	{
-		AbilityInterface->Execute_PrimaryAbility(PlayerCharacterReference->CurrentWeapon.Get(), PlayerCharacterReference, CachedCursorLocation);
 		UE_LOG(LogTemp, Warning, TEXT("Action: Primary!"));
+		AbilityInterface->Execute_PrimaryAbility(PlayerCharacterReference->CurrentWeapon, PlayerCharacterReference, CachedCursorLocation);
 	}
 }
 
@@ -57,8 +57,8 @@ void ABasePlayerController::ActionSecondary(const FInputActionInstance& Instance
 	UE_LOG(LogTemp, Warning, TEXT("Action: Secondary!"));
 }
 
-void ABasePlayerController::ActionTransition(const FInputActionValue& Value)
+void ABasePlayerController::ActionTransition(const FInputActionInstance& Instance)
 {
-	PlayerCharacterReference->ArmsComponent->OnWeaponChangeDelegate.Broadcast(Value.GetMagnitude());
+	PlayerCharacterReference->ArmsComponent->OnWeaponChangeDelegate.Broadcast(Instance.GetValue().GetMagnitude());
 }
 
