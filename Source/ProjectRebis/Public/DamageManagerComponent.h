@@ -45,7 +45,7 @@ public:
 	void RecieveDamageHandler(FDamageData DamageData);
 
 	UFUNCTION(BlueprintCallable)
-	void AddPropulsion();
+	void AddPropulsion(FDamageData DamageData);
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")

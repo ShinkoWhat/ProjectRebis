@@ -13,7 +13,10 @@
 /**
  * 
  */
-UCLASS()
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInitializePawn);
+
+UCLASS(BlueprintType, Blueprintable)
 class PROJECTREBIS_API ABasePlayerController : public APlayerController
 {
 	GENERATED_BODY()
@@ -27,12 +30,15 @@ public:
 protected:
 
 	UFUNCTION()
-	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
+	void SetupPlayerInputComponent();
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enhanced Input")
 	UInputMappingContext* InputMapping;
 
 public:
+
+	UPROPERTY(BlueprintCallable, Category="Default")
+	FOnInitializePawn OnInitializePawn;
 
 	UFUNCTION(BlueprintCallable)
 	void ActionPrimary(const FInputActionInstance& Instance);
@@ -42,6 +48,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ActionTransition(const FInputActionInstance& Instance);
+
+	UFUNCTION(BlueprintCallable)
+	void DEBUGActionSave(const FInputActionInstance& Instance);
 	
 public:
 

@@ -5,18 +5,19 @@
 #include "BaseWeapon.h"
 
 // Sets default values
-ACharacterBase::ACharacterBase()
+ACharacterBase::ACharacterBase(const FObjectInitializer& ObjectInitializer)
+	: ACharacter(ObjectInitializer)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SetRootComponent(GetCapsuleComponent());
 	
-	Camera = CreateOptionalDefaultSubobject<UCameraComponent>(TEXT("DefaultCamera"));
-	Camera->SetupAttachment(RootComponent);
-	CameraComponent = CreateOptionalDefaultSubobject<UCameraControlComponent>(TEXT("DefaultCameraControl"));
-	ArmsComponent = CreateDefaultSubobject<UArmsComponent>(TEXT("DefaultArmsComponent"));
-	DamageManagerComponent = CreateDefaultSubobject<UDamageManagerComponent>(TEXT("DefaultDamageManager"));
+	Camera = ObjectInitializer.CreateOptionalDefaultSubobject<UCameraComponent>(this, TEXT("DefaultCamera"));
+	//Camera->SetupAttachment(RootComponent);
+	CameraComponent = ObjectInitializer.CreateOptionalDefaultSubobject<UCameraControlComponent>(this, TEXT("DefaultCameraControl"));
+	ArmsComponent = ObjectInitializer.CreateOptionalDefaultSubobject<UArmsComponent>(this, TEXT("DefaultArmsComponent"));
+	DamageManagerComponent = ObjectInitializer.CreateDefaultSubobject<UDamageManagerComponent>(this, TEXT("DefaultDamageManager"));
 }
 
 // Called when the game starts or when spawned
@@ -25,13 +26,19 @@ void ACharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 	SkeletalMesh = Super::GetMesh();
-	Camera->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	OnDeathDelegate.AddDynamic(this, &ACharacterBase::DeathHandler);
+	//Camera->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called every frame
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (HP <= 0)
+	{
+		OnDeathDelegate.Broadcast();
+	}
 }
 
 // Called to bind functionality to input
@@ -45,7 +52,7 @@ void ACharacterBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnWeaponPickup);
+	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnWeaponPickup);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::TestOverlapHandler);
 }
 
@@ -84,6 +91,26 @@ void ACharacterBase::TestOverlapHandler(UPrimitiveComponent* OverlappedComp, AAc
 	NewDamageData.OtherActor = OtherActor;
 	NewDamageData.DamageValue = DamageManagerComponent->BaseDamage;
 	NewDamageData.OtherComp = OtherComp;
+	NewDamageData.Poise = DamageManagerComponent->Poise;
 	DamageManagerComponent->OnSendDamageDelegate.Broadcast(NewDamageData);
+}
+
+void ACharacterBase::DeathHandler()
+{
+	if (this)
+	{
+		//Destroy();
+	}
+}
+
+FBasePlayerSaveData ACharacterBase::GetPlayerSaveData()
+{
+	FBasePlayerSaveData DataToSave;
+	DataToSave.CurrentWeapon = CurrentWeapon->GetClass();
+	for (auto Pair : ArmsComponent->WeaponArray)
+	{
+		DataToSave.EquippedWeapons.Emplace(Pair.Key) = Pair.Value->GetClass();
+	}
+	return DataToSave;
 }
 

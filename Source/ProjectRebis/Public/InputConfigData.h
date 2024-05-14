@@ -27,4 +27,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* InputMiddleMouse;
+
+	// DEBUG
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* DEBUGInputSave;
 };

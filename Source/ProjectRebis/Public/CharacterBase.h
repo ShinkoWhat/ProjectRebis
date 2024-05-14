@@ -9,9 +9,12 @@
 #include "Components/CapsuleComponent.h"
 #include "CameraControlComponent.h"
 #include "DamageManagerComponent.h"
+#include "BasePlayerSaveData.h"
 #include "CharacterBase.generated.h"
 
-UCLASS()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathDelegate);
+
+UCLASS(CustomConstructor)
 class PROJECTREBIS_API ACharacterBase : public ACharacter
 {
 	GENERATED_BODY()
@@ -21,7 +24,7 @@ class PROJECTREBIS_API ACharacterBase : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	ACharacterBase();
+	ACharacterBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,6 +38,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+
+	FOnDeathDelegate OnDeathDelegate;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void PostInitializeComponents() override;
@@ -55,6 +60,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TestOverlapHandler(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable)
+	void DeathHandler();
+
+	UFUNCTION(BlueprintCallable)
+	FBasePlayerSaveData GetPlayerSaveData();
 
 //Components
 public:
@@ -91,5 +102,8 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	ABaseWeapon* CurrentWeapon;
+
+	UPROPERTY(BlueprintReadWrite, Category="Default")
+	FBasePlayerSaveData PlayerSaveData;
 };
 

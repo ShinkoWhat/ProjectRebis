@@ -7,6 +7,7 @@
 #include "BaseAbility.h"
 #include "Animation/SkeletalMeshActor.h"
 #include "Components/BoxComponent.h"
+#include "WeaponType.h"
 #include "BaseWeapon.generated.h"
 
 UCLASS(Blueprintable)
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="DefaultCollision")
 	UBoxComponent* BoxCollision;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Default")
+	TEnumAsByte<EWeaponType> WeaponType;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
 	void PrimaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation);

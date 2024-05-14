@@ -63,4 +63,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
 	int32 CurrentWeaponID;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
+	TMap<FString, TSoftClassPtr<class UBaseModifier>> ModifierArray;
 };

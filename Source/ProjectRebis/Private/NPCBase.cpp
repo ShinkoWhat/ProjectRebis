@@ -3,26 +3,22 @@
 
 #include "NPCBase.h"
 
-#include "ArmsComponent.h"
-#include "DamageManagerComponent.h"
-
 // Sets default values
-ANPCBase::ANPCBase()
+ANPCBase::ANPCBase(const FObjectInitializer& ObjectInitializer)
+	: ACharacterBase(ObjectInitializer.DoNotCreateDefaultSubobject(TEXT("DefaultCamera")).
+		DoNotCreateDefaultSubobject(TEXT("DefaultCameraControl")).
+		DoNotCreateDefaultSubobject(TEXT("DefaultArmsComponent")))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//ArmsComponent = CreateDefaultSubobject<UArmsComponent>(TEXT("DefaultArmsComponent"));
-	DamageManagerComponent = CreateDefaultSubobject<UDamageManagerComponent>(TEXT("DefaultDamageManager"));
-	//CurrentWeapon = nullptr;
+	
 }
 
 // Called when the game starts or when spawned
 void ANPCBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SkeletalMesh = GetMesh();
 }
 
 // Called every frame
@@ -32,10 +28,4 @@ void ANPCBase::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void ANPCBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
 

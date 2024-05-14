@@ -37,41 +37,43 @@ void UDamageManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 void UDamageManagerComponent::SendDamage_Implementation(FDamageData DamageData)
 {
 	IDamageHandler::SendDamage_Implementation(DamageData);
-	auto msg1 = TEXT("OOOOOOOOOOOOOOOOO");
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg1);
-	if (DamageData.OtherComp->GetClass()->ImplementsInterface(UDamageHandler::StaticClass()))
-	{
-		Cast<UDamageManagerComponent>(DamageData.OtherComp)->OnRecieveDamageDelegate.Broadcast(DamageData);
-	}
 }
 
 void UDamageManagerComponent::RecieveDamage_Implementation(FDamageData DamageData)
 {
-	auto msg1 = TEXT("AAAAAAAAAAAAAAAA");
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg1);
-	GetOwner()->Destroy();
 	IDamageHandler::RecieveDamage_Implementation(DamageData);
 }
 
 void UDamageManagerComponent::SendDamageHandler(FDamageData DamageData)
 {
-	auto msg1 = TEXT("OOOOOOOOOOOOOOOOO");
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg1);
-	if (Cast<class ANPCBase>(DamageData.OtherActor)->DamageManagerComponent)
+	if (Cast<ACharacterBase>(DamageData.OtherActor)->DamageManagerComponent)
 	{
-		auto msg2 = TEXT("AAAAAAAAAAAAAAAA");
+		auto msg2 = TEXT("Hit Event");
 		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg2);
-		Cast<class ANPCBase>(DamageData.OtherActor)->DamageManagerComponent->OnRecieveDamageDelegate.Broadcast(DamageData);
+		AddPropulsion(DamageData);
+		Cast<ACharacterBase>(DamageData.OtherActor)->DamageManagerComponent->OnRecieveDamageDelegate.Broadcast(DamageData);
 	}
 }
 
 void UDamageManagerComponent::RecieveDamageHandler(FDamageData DamageData)
 {
+	auto msg1 = TEXT("NPC Damaged: " + GetOwner()->GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg1);
 	
-	GetOwner()->Destroy();
+	if (DamageData.OtherActor == GetOwner())
+	{
+		Cast<ACharacterBase>(GetOwner())->HP = Cast<ACharacterBase>(GetOwner())->HP - DamageData.DamageValue;
+	}
 }
 
-void UDamageManagerComponent::AddPropulsion()
+void UDamageManagerComponent::AddPropulsion(FDamageData DamageData)
 {
+	if (DamageData.OtherActor)
+	{
+		FVector ActorVelocity = Cast<ACharacterBase>(GetOwner())->GetVelocity();
+		double OtherActorPoise = Cast<ACharacterBase>(DamageData.OtherActor)->DamageManagerComponent->Poise;
+		ActorVelocity *= (1 - OtherActorPoise);
+		Cast<ACharacterBase>(DamageData.OtherActor)->LaunchCharacter(ActorVelocity, false, false);
+	}
 }
 

@@ -28,7 +28,7 @@ void UCameraControlComponent::BeginPlay()
 	Camera = PlayerCharacterReference->GetCamera();
 	CameraOrigin = Camera->GetRelativeLocation();
 
-	Tolerance = 0.5f;
+	//Tolerance = 0.2f;
 	FalloffRange = 500.0f;
 }
 

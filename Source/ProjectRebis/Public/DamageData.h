@@ -18,5 +18,8 @@ struct FDamageData
 	
 	UPROPERTY(BlueprintReadWrite)
 	double DamageValue;
+
+	UPROPERTY(BlueprintReadWrite)
+	double Poise;
 	// ..Add more parameters
 };
