@@ -66,4 +66,16 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
 	TMap<FString, TSoftClassPtr<class UBaseModifier>> ModifierArray;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Sockets")
+	FName PrimarySocket;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Sockets")
+	FName SecondarySocket;
+
+	UPROPERTY(BlueprintReadOnly, Category="Sockets")
+	FName RecoverySocketName;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Sockets")
+	TMap<FString, FName> SocketArray;
 };

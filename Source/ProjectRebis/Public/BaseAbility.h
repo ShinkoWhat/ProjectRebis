@@ -20,7 +20,7 @@ class IBaseAbility
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
-	void PrimaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation);
+	void PrimaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity, double& CurrentVelocity);
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
 	void SecondaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation);

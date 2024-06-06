@@ -43,6 +43,9 @@ public:
 
 	UFUNCTION()
 	void CameraSpring(double Alpha);
+
+	UFUNCTION()
+	void NearestCentroidSpring(TArray<AActor*> OtherActors);
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default")
 	UCameraComponent* Camera;

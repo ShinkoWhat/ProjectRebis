@@ -52,7 +52,8 @@ void ABasePlayerController::ActionPrimary(const FInputActionInstance& Instance)
 	if (PlayerCharacterReference->CurrentWeapon->Implements<UBaseAbility>())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Action: Primary!"));
-		PlayerCharacterReference->CurrentWeapon->Execute_PrimaryAbility(PlayerCharacterReference->CurrentWeapon, PlayerCharacterReference, CachedCursorLocation);
+		PlayerCharacterReference->CurrentWeapon->Execute_PrimaryAbility(PlayerCharacterReference->CurrentWeapon,
+			PlayerCharacterReference, CachedCursorLocation, CurrentMinVelocity, CurrentMaxVelocity, CurrentVelocity);
 	}
 }
 

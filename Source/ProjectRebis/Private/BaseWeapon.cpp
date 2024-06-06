@@ -3,6 +3,9 @@
 
 #include "BaseWeapon.h"
 
+#include "CharacterBase.h"
+#include "VectorTypes.h"
+
 // Sets default values
 ABaseWeapon::ABaseWeapon()
 {
@@ -32,9 +35,12 @@ void ABaseWeapon::PostInitializeComponents()
 	
 }
 
-void ABaseWeapon::PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation)
+void ABaseWeapon::PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity, double& CurrentVelocity)
 {
-	IBaseAbility::PrimaryAbility_Implementation(PlayerReference, TargetLocation);
+	CurrentVelocity = FMath::Lerp(MinVelocity, MaxVelocity, WeaponAcceleration);
+	FVector BufferPlayerLocation = PlayerReference->GetActorLocation();
+	FVector BufferDirection = (TargetLocation - BufferPlayerLocation).GetSafeNormal();
+	PlayerReference->AddMovementInput(BufferDirection, CurrentVelocity);
 }
 
 void ABaseWeapon::SecondaryAbility_Implementation(ACharacterBase* PlayerReference, FVector TargetLocation)

@@ -64,4 +64,16 @@ void UCameraControlComponent::CameraSpring(const double Alpha = 0.5f)
 	TargetLocation = FVector(BufferLerp.X + CameraOrigin.X, BufferLerp.Y + CameraOrigin.Y, CameraLocation.Z);
 }
 
+void UCameraControlComponent::NearestCentroidSpring(TArray<AActor*> OtherActors)
+{
+	FVector SkeletalMeshLoc = PlayerCharacterReference->SkeletalMesh->GetComponentLocation();
+	TArray<double> DistanceArray;
+	for (auto iter : OtherActors)
+	{
+		auto Buffer = (iter->GetActorLocation() - SkeletalMeshLoc).Length();
+		DistanceArray.Add(Buffer);
+	}
+}
+
+
 

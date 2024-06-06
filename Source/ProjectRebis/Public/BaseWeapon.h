@@ -43,9 +43,24 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Default")
 	TEnumAsByte<EWeaponType> WeaponType;
 
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Default")
+	FString WeaponKey;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double WeaponAcceleration;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double WeaponMaxVelocity;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double WeaponMinVelocity;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double WeaponTravelDistance;
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
-	void PrimaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation);
-	virtual void PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation) override;
+	void PrimaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity, double& CurrentVelocity);
+	virtual void PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity, double& CurrentVelocity) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
 	void SecondaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation);

@@ -67,4 +67,19 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Default")
 	TArray<TEnumAsByte<EObjectTypeQuery>> TypeQuery;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double CurrentAcceleration;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double CurrentMaxVelocity;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double CurrentMinVelocity;
+
+	UPROPERTY(BlueprintReadWrite, Category="Movement")
+	double CurrentVelocity;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Movement")
+	double CurrentTravelDistance;
 };

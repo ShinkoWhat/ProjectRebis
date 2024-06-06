@@ -79,6 +79,7 @@ void ACharacterBase::AttachWeaponToCharacter(ABaseWeapon* WeaponToAttach, FName 
 		//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, msg);
 		WeaponToAttach->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, Socket);
 		CurrentWeapon = WeaponToAttach;
+		CurrentWeaponType = CurrentWeapon->WeaponKey;
 	}
 }
 
@@ -99,7 +100,7 @@ void ACharacterBase::DeathHandler()
 {
 	if (this)
 	{
-		//Destroy();
+		Destroy();
 	}
 }
 

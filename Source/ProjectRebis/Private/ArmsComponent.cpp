@@ -90,8 +90,15 @@ FString UArmsComponent::GetMapKeyByValue(ABaseWeapon* Value)
 
 void UArmsComponent::AssignNewWeapon(int32 Id)
 {
+	//PlayerCharacterReference->CurrentWeapon->AttachToComponent(PlayerCharacterReference->GetMesh(),
+	//	FAttachmentTransformRules::SnapToTargetIncludingScale,
+	//	SocketArray.FindRef(WeaponArray.FindKey(WeaponArrayKeys[])));
+	//RecoverySocketName = WeaponArray.FindRef(WeaponArrayKeys[Id])->GetAttachParentSocketName();
+	//PlayerCharacterReference->CurrentWeapon->AttachToComponent(PlayerCharacterReference->GetMesh(),
+	//	FAttachmentTransformRules::SnapToTargetIncludingScale,
+	//	RecoverySocketName);
 	PlayerCharacterReference->CurrentWeapon = WeaponArray.FindRef(WeaponArrayKeys[Id]);
-	PlayerCharacterReference->AttachWeaponToCharacter(PlayerCharacterReference->CurrentWeapon, "RightHandSocket");
+	PlayerCharacterReference->AttachWeaponToCharacter(PlayerCharacterReference->CurrentWeapon, PrimarySocket);
 }
 
 void UArmsComponent::InstantiatePlayer()
@@ -102,6 +109,10 @@ void UArmsComponent::InstantiatePlayer()
 	WeaponArray.Add("Dexterity", nullptr);
 	WeaponArray.Add("Strength", nullptr);
 	WeaponArray.Add("Support", nullptr);
+
+	SocketArray.Add("Dexterity", "LeftShoulderSocket");
+	SocketArray.Add("Strength", "Spine2Socket");
+	SocketArray.Add("Support", "RightShoulderSocket");
 	
 	WeaponArray.GenerateKeyArray(WeaponArrayKeys);
 

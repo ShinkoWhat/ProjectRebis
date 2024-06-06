@@ -103,7 +103,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	ABaseWeapon* CurrentWeapon;
 
+	UPROPERTY(BlueprintReadOnly, Category="Default")
+	FString CurrentWeaponType;
+
 	UPROPERTY(BlueprintReadWrite, Category="Default")
 	FBasePlayerSaveData PlayerSaveData;
+	
 };
 
