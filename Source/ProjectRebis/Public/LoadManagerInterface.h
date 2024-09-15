@@ -23,10 +23,13 @@ class ILoadManagerInterface
 public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface")
-	void SaveGameData(bool bIsAsync);
+	void NewSaveGameData(bool bIsAsync, UBaseSaveData*& BaseSaveData);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface")
-	void LoadGameData(bool bIsAsync);
+	void SaveGameData(bool bIsAsync, UBaseSaveData* BaseSaveData, const FString& SaveSlotName);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface")
+	void LoadGameData(bool bIsAsync, const FString& SaveSlotName, UBaseSaveData*& BaseSaveData);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface")
 	UBaseSaveData* GetGameData();

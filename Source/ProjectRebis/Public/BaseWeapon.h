@@ -35,7 +35,7 @@ public:
 public:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
-	TArray<UAnimMontage*> ComboMontage;
+	UAnimMontage* ComboMontage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="DefaultCollision")
 	UBoxComponent* BoxCollision;
@@ -59,8 +59,8 @@ public:
 	double WeaponTravelDistance;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
-	void PrimaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity, double& CurrentVelocity);
-	virtual void PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity, double& CurrentVelocity) override;
+	void PrimaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity);
+	virtual void PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
 	void SecondaryAbility(class ACharacterBase* PlayerReference, FVector TargetLocation);

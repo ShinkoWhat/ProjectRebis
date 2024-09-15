@@ -61,7 +61,7 @@ void UCameraControlComponent::CameraSpring(const double Alpha = 0.5f)
 	
 	FVector BufferLerp = FMath::Lerp(FVector(SkeletalMeshLoc.X, SkeletalMeshLoc.Y, CameraLocation.Z),
 		FVector(TargetLocation.X, TargetLocation.Y, CameraLocation.Z), dAlpha);
-	TargetLocation = FVector(BufferLerp.X + CameraOrigin.X, BufferLerp.Y + CameraOrigin.Y, CameraLocation.Z);
+	TargetLocation = FVector(BufferLerp.X + CameraOrigin.X, BufferLerp.Y + CameraOrigin.Y, SkeletalMeshLoc.Z + CameraOrigin.Z);
 }
 
 void UCameraControlComponent::NearestCentroidSpring(TArray<AActor*> OtherActors)

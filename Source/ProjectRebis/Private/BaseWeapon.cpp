@@ -35,12 +35,9 @@ void ABaseWeapon::PostInitializeComponents()
 	
 }
 
-void ABaseWeapon::PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity, double& CurrentVelocity)
+void ABaseWeapon::PrimaryAbility_Implementation(class ACharacterBase* PlayerReference, FVector TargetLocation, double MinVelocity, double MaxVelocity)
 {
-	CurrentVelocity = FMath::Lerp(MinVelocity, MaxVelocity, WeaponAcceleration);
-	FVector BufferPlayerLocation = PlayerReference->GetActorLocation();
-	FVector BufferDirection = (TargetLocation - BufferPlayerLocation).GetSafeNormal();
-	PlayerReference->AddMovementInput(BufferDirection, CurrentVelocity);
+	IBaseAbility::PrimaryAbility_Implementation(PlayerReference, TargetLocation, MinVelocity, MaxVelocity);
 }
 
 void ABaseWeapon::SecondaryAbility_Implementation(ACharacterBase* PlayerReference, FVector TargetLocation)

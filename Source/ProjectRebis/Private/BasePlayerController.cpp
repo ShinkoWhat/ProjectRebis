@@ -41,9 +41,9 @@ void ABasePlayerController::SetupPlayerInputComponent()
 
 	UEnhancedInputComponent* PEI = Cast<UEnhancedInputComponent>(InputComponent);
 
-	PEI->BindAction(InputActions->InputPrimary, ETriggerEvent::Triggered, this, &ABasePlayerController::ActionPrimary);
+	//PEI->BindAction(InputActions->InputPrimary, ETriggerEvent::Triggered, this, &ABasePlayerController::ActionPrimary);
 	PEI->BindAction(InputActions->InputSecondary, ETriggerEvent::Triggered, this, &ABasePlayerController::ActionSecondary);
-	PEI->BindAction(InputActions->InputScroll, ETriggerEvent::Triggered, this, &ABasePlayerController::ActionTransition);
+	//PEI->BindAction(InputActions->InputScroll, ETriggerEvent::Triggered, this, &ABasePlayerController::ActionTransition);
 	PEI->BindAction(InputActions->DEBUGInputSave, ETriggerEvent::Triggered, this, &ABasePlayerController::DEBUGActionSave);
 }
 
@@ -53,7 +53,7 @@ void ABasePlayerController::ActionPrimary(const FInputActionInstance& Instance)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Action: Primary!"));
 		PlayerCharacterReference->CurrentWeapon->Execute_PrimaryAbility(PlayerCharacterReference->CurrentWeapon,
-			PlayerCharacterReference, CachedCursorLocation, CurrentMinVelocity, CurrentMaxVelocity, CurrentVelocity);
+			PlayerCharacterReference, CachedCursorLocation, CurrentMinVelocity, CurrentMaxVelocity);
 	}
 }
 

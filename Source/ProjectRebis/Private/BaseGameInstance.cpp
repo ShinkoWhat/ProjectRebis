@@ -8,49 +8,55 @@ void UBaseGameInstance::Init()
 	Super::Init();
 
 	AsyncLoadGameFromSlotDelegate.BindUObject(this, &UBaseGameInstance::OnAsyncLoadCallback);
-	Execute_LoadGameData(this, false);
+	Execute_LoadGameData(this, false, SaveFileName, SaveDataInit);
 }
 
-void UBaseGameInstance::SaveGameData_Implementation(bool bIsAsync = true)
+void UBaseGameInstance::NewSaveGameData_Implementation(bool bIsAsync, UBaseSaveData*& BaseSaveData)
+{
+	auto BufferSaveData = UGameplayStatics::CreateSaveGameObject(SaveData);
+	BaseSaveData = Cast<UBaseSaveData>(BufferSaveData);
+}
+
+void UBaseGameInstance::SaveGameData_Implementation(bool bIsAsync, UBaseSaveData* BaseSaveData, const FString& SaveSlotName)
 {
 	if (bIsAsync)
 	{
-		UGameplayStatics::AsyncSaveGameToSlot(SaveDataInit, SaveFileName, 0);
+		UGameplayStatics::AsyncSaveGameToSlot(BaseSaveData, SaveSlotName, 0);
 	}
 	else
 	{
-		UGameplayStatics::SaveGameToSlot(SaveDataInit, SaveFileName, 0);
+		UGameplayStatics::SaveGameToSlot(BaseSaveData, SaveSlotName, 0);
 	}
 }
 
-void UBaseGameInstance::LoadGameData_Implementation(bool bIsAsync = true)
+void UBaseGameInstance::LoadGameData_Implementation(bool bIsAsync, const FString& SaveSlotName, UBaseSaveData*& BaseSaveData)
 {
-	if (UGameplayStatics::DoesSaveGameExist(SaveFileName, 0))
+	if (UGameplayStatics::DoesSaveGameExist(SaveSlotName, 0))
 	{
 		if (bIsAsync)
 		{
-			UGameplayStatics::AsyncLoadGameFromSlot(SaveFileName, 0, AsyncLoadGameFromSlotDelegate);
+			UGameplayStatics::AsyncLoadGameFromSlot(SaveSlotName, 0, AsyncLoadGameFromSlotDelegate);
 		}
 		else
 		{
-			UGameplayStatics::LoadGameFromSlot(SaveFileName, 0);
+			BaseSaveData = Cast<UBaseSaveData>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
 		}
 	}
 	else
 	{
-		UGameplayStatics::CreateSaveGameObject(SaveData.Get());
+		UE_LOG(LogTemp, Error, TEXT("Error: No SaveGame file found."));
 	}
 }
 
 UBaseSaveData* UBaseGameInstance::GetGameData_Implementation()
 {
-	return SaveDataInit;
+	return Cast<UBaseSaveData>(SaveData->GetDefaultObject());
 }
 
 void UBaseGameInstance::WritePlayerData_Implementation(FBasePlayerSaveData PlayerSaveData, bool bIsAsync = true)
 {
-	SaveDataInit->PlayerSaveData = PlayerSaveData;
-	Execute_SaveGameData(this, bIsAsync);
+	Cast<UBaseSaveData>(SaveData->GetDefaultObject())->PlayerSaveData = PlayerSaveData;
+	Execute_SaveGameData(this, bIsAsync, SaveDataInit, SaveFileName);
 }
 
 void UBaseGameInstance::OnAsyncLoadCallback(const FString& SlotName, const int32 UserIndex, USaveGame* LoadedGameData)

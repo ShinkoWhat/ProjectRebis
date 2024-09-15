@@ -27,21 +27,25 @@ public:
 	TMap<FString, TSoftObjectPtr<UWorld>> LevelsArray;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
-	TSoftClassPtr<UBaseSaveData> SaveData;
+	TSubclassOf<UBaseSaveData> SaveData;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
 	UBaseSaveData* SaveDataInit;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Default")
 	FString SaveFileName;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
-	void SaveGameData(bool bIsAsync);
-	virtual void SaveGameData_Implementation(bool bIsAsync) override;
+	void NewSaveGameData(bool bIsAsync, UBaseSaveData*& BaseSaveData);
+	virtual void NewSaveGameData_Implementation(bool bIsAsync, UBaseSaveData*& BaseSaveData) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
-	void LoadGameData(bool bIsAsync);
-	virtual void LoadGameData_Implementation(bool bIsAsync) override;
+	void SaveGameData(bool bIsAsync, UBaseSaveData* BaseSaveData, const FString& SaveSlotName);
+	virtual void SaveGameData_Implementation(bool bIsAsync, UBaseSaveData* BaseSaveData, const FString& SaveSlotName) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interface")
+	void LoadGameData(bool bIsAsync, const FString& SaveSlotName, UBaseSaveData*& BaseSaveData);
+	virtual void LoadGameData_Implementation(bool bIsAsync, const FString& SaveSlotName, UBaseSaveData*& BaseSaveData) override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface")
 	UBaseSaveData* GetGameData();

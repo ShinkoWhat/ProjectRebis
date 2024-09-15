@@ -11,6 +11,7 @@ ACharacterBase::ACharacterBase(const FObjectInitializer& ObjectInitializer)
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bIsAlive = true;
 	SetRootComponent(GetCapsuleComponent());
 	
 	Camera = ObjectInitializer.CreateOptionalDefaultSubobject<UCameraComponent>(this, TEXT("DefaultCamera"));
@@ -26,7 +27,7 @@ void ACharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 	SkeletalMesh = Super::GetMesh();
-	OnDeathDelegate.AddDynamic(this, &ACharacterBase::DeathHandler);
+	//OnDeathDelegate.AddDynamic(this, &ACharacterBase::DeathHandler);
 	//Camera->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
@@ -35,7 +36,7 @@ void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (HP <= 0)
+	if (bIsAlive && HP <= 0)
 	{
 		OnDeathDelegate.Broadcast();
 	}
@@ -53,7 +54,7 @@ void ACharacterBase::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnWeaponPickup);
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::TestOverlapHandler);
+	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::TestOverlapHandler);
 }
 
 void ACharacterBase::OnWeaponPickup(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

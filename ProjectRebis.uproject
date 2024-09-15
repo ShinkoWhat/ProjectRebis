@@ -115,6 +115,14 @@
 		{
 			"Name": "CLionSourceCodeAccess",
 			"Enabled": false
+		},
+		{
+			"Name": "OnlineServicesEOS",
+			"Enabled": true
 		}
+	],
+	"TargetPlatforms": [
+		"Windows",
+		"HoloLens"
 	]
 }

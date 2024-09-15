@@ -16,6 +16,15 @@ struct FBasePlayerSaveData
 
 public:
 	UPROPERTY(BlueprintReadWrite)
+	FString PlayerName;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString PlayerDiagnosis;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 TotalAttemptCount;
+	
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<class ABaseWeapon> CurrentWeapon;
 
 	UPROPERTY(BlueprintReadWrite)

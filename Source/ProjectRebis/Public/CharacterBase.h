@@ -39,6 +39,7 @@ public:
 
 public:
 
+	UPROPERTY(BlueprintAssignable)
 	FOnDeathDelegate OnDeathDelegate;
 
 	UFUNCTION(BlueprintCallable)
@@ -92,7 +93,7 @@ public:
 public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
-	int32 HP;
+	double HP;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")
 	FVector FloorNormal;
@@ -108,6 +109,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category="Default")
 	FBasePlayerSaveData PlayerSaveData;
+
+	UPROPERTY(BlueprintReadWrite, Category="Default")
+	bool bIsAlive;
 	
 };
 

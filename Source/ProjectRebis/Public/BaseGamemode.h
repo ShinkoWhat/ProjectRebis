@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AttemptData.h"
 #include "GameFramework/GameMode.h"
 #include "BaseGamemode.generated.h"
 
@@ -23,6 +24,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="Default")
 	TSubclassOf<APawn> CharacterReference;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Data")
+	FAttemptData AttemptData;
 	
 public:
 

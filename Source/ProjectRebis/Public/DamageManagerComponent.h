@@ -28,6 +28,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	FOnSendDamageDelegate OnSendDamageDelegate;
+
+	UPROPERTY(BlueprintAssignable)
 	FOnRecieveDamageDelegate OnRecieveDamageDelegate;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interface")
